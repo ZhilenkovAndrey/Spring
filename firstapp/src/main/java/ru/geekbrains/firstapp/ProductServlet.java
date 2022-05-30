@@ -23,7 +23,6 @@ public class ProductServlet extends HttpServlet {
         resp.setContentType("text/html");
 
         for (int i = 0; i < 10; i++) {
-
             int id = i + 1;
             String title = req.getParameter("product title: ");
             double cost = Double.parseDouble(req.getParameter("product cost: "));
