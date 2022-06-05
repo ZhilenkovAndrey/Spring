@@ -21,7 +21,7 @@ public class CartService {
     }
 
     public Cart getCurrentCart() {
-        return cart;
+        return this.cart;
     }
 
     public void addToCart(int productId) {
@@ -39,10 +39,12 @@ public class CartService {
     }
 
     public void removeFromCart(String productTitle) {
-        cart.remove(productTitle);
+        Product product = productService.find(productTitle).get();
+        cart.remove(product);
     }
 
     public void removeFromCart(int productId) {
-        cart.remove(productId);
+        Product product = productService.find(productId).get();
+        cart.remove(product);
     }
 }

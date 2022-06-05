@@ -16,7 +16,7 @@ public class MainApp {
         orderService.beginOrdering(context);
 
 
-        context.close();
+//        context.close();
 
         // 1. Что такое спринг бин
         // 2. Какие есть способы инжекции зависимостей
