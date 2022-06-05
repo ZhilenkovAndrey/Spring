@@ -34,39 +34,44 @@ public class OrderService {
         System.out.println("Do you wont to make an order: y/n ");
     }
 
-    public void beginOrdering(AnnotationConfigApplicationContext context, Order order) {
+    public void beginOrdering(AnnotationConfigApplicationContext context) {
         try {
             a = reader.readLine();
         } catch (IOException e) {
             System.out.println(" Unknown command");
-            beginOrdering(context, order);
+            beginOrdering(context);
         }
 
         if (a.equalsIgnoreCase("y")) {
-            createNewOrder(order);
+            createNewOrder();
         } else if (a.equalsIgnoreCase("n")) {
             System.out.println(" Press q to quite");
             try {
                 a = reader.readLine();
-                exit(a, context, order);
+                exit(a, context);
             } catch (IOException e) {
                 System.out.println(" Unknown command");
-                beginOrdering(context, order);
+                beginOrdering(context);
             }
         } else {
             System.out.println(" Unknown command");
-            beginOrdering(context, order);
+            beginOrdering(context);
         }
     }
 
-    public Order createNewOrder(Order order) {
-
+    public Order createNewOrder() {
+        Order order = new Order();
         order.setId(UUID.randomUUID().toString());
 
         User currentUser = userService.getCurrentUser();
         order.setUser(UserRegistration(currentUser));
-
-        Cart currentCart = productSetting(cartService);
+        Cart currentCart = new Cart();
+        order.setProducts(productAdd(cartService).getProducts());
+        printOrder(order);
+        order.setProducts(productRemove(cartService).getProducts());
+        printOrder(order);
+//        Cart currentCart = productAdd(cartService);
+//        currentCart = productRemove(cartService, order);
 
 //        for (Product p : currentCart.getProducts()) {
 //            if (!productService.isProductIdExist(p.getId())) {
@@ -91,9 +96,9 @@ public class OrderService {
         return currentUser;
     }
 
-    public Cart productSetting(CartService cartService) {
+    public Cart productAdd(CartService cartService) {
         while (true) {
-            System.out.println("Enter name or id of product:");
+            System.out.println("Enter name or id of product to add: ");
             System.out.println("Press f to finish");
             try {
                 a = reader.readLine();
@@ -106,20 +111,52 @@ public class OrderService {
                     int c = Integer.parseInt(a);
                     cartService.addToCart(c);
                 } catch (NumberFormatException ex) {
-                    System.out.println(" Unknown command");
-                    productSetting(cartService);
+                    System.out.println(" Unknown command...");
+                    productAdd(cartService);
                 }
             }
         }
         return cartService.getCurrentCart();
     }
 
-    public void exit(String a, AnnotationConfigApplicationContext context, Order order) {
+    public void exit(String a, AnnotationConfigApplicationContext context) {
         if (a.equalsIgnoreCase("q")) {
             context.close();
         } else {
-            System.out.println(" Unknown command");
-            beginOrdering(context, order);
+            System.out.println(" Unknown command...");
+            beginOrdering(context);
         }
     }
+
+    public Cart productRemove(CartService cartService) {
+        while (true) {
+            System.out.println("Enter name or id of product to remove: ");
+            System.out.println("Press f to finish");
+            try {
+                a = reader.readLine();
+                cartService.removeFromCart(a);
+            } catch (NoSuchElementException | IOException e) {
+                if (a.equalsIgnoreCase("f")) {
+                    break;
+                }
+                try {
+                    int c = Integer.parseInt(a);
+                    cartService.removeFromCart(c);
+                } catch (NumberFormatException ex) {
+                    System.out.println(" Unknown command...");
+                    productRemove(cartService);
+                }
+            }
+        }
+        return cartService.getCurrentCart();
+    }
+
+    public void printOrder(Order order) {
+        System.out.println(" Order id = " + order.getId());
+        System.out.println(" Order owner: " + order.getUser().getUsername());
+        System.out.println("------------------------------------------------");
+        order.getProducts().stream().forEach(System.out::println);
+        System.out.println("------------------------------------------------");
+    }
 }
+

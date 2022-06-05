@@ -13,14 +13,8 @@ public class MainApp {
         OrderService orderService = context.getBean(OrderService.class);
 
         orderService.printListProducts();
-        Order order = new Order();
-        orderService.beginOrdering(context, order);
-        System.out.println(order.getId());
-        System.out.println(order.getUser().getUsername());
-        System.out.println(order.getProducts());
+        orderService.beginOrdering(context);
 
-//
-//        System.out.println(cartService.getCurrentCart());
 
         context.close();
 
