@@ -2,7 +2,7 @@ package com.geekbrains.market;
 
 
 public class Product {
-    private Long id;
+    private int id;
     private String title;
     private double cost;
 
@@ -14,11 +14,11 @@ public class Product {
         this.cost = cost;
     }
 
-    public Long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -33,7 +33,7 @@ public class Product {
     public Product() {
     }
 
-    public Product(Long id, String title,double cost) {
+    public Product(int id, String title,double cost) {
         this.id = id;
         this.title = title;
         this.cost = cost;

@@ -10,7 +10,7 @@ public class UserService {
 
     @PostConstruct
     public void init() {
-        this.currentUser = new User("Bob");
+        this.currentUser = new User();
     }
 
     public User getCurrentUser() {

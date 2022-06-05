@@ -5,6 +5,6 @@ import java.util.Optional;
 
 public interface ProductRepository {
     List<Product> findAll();
-    Optional<Product> findById(Long id);
-    Optional<Product> findByTitle(String title);
+    Optional<Product> find(int id);
+    Optional<Product> find(String title);
 }

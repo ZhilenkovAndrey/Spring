@@ -19,8 +19,12 @@ public class Cart {
         products.add(product);
     }
 
-    public void removeByTitle(String productTitle) {
+    public void remove(String productTitle) {
         products.removeIf(p -> p.getTitle().equals(productTitle));
+    }
+
+    public void remove(int productId) {
+        products.removeIf(p -> p.getTitle().equals(productId));
     }
 
     public void clear() {

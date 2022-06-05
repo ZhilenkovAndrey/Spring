@@ -14,16 +14,16 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
-    public Optional<Product> findById(Long id) {
-        return productRepository.findById(id);
+    public Optional<Product> find(int id) {
+        return productRepository.find(id);
     }
 
-    public Optional<Product> findByTitle(String title) {
-        return productRepository.findByTitle(title);
+    public Optional<Product> find(String title) {
+        return productRepository.find(title);
     }
 
-    public boolean isProductIdExist(Long id) {
-        return productRepository.findAll().stream().anyMatch(p -> p.getId().equals(id));
+    public boolean isProductIdExist(int id) {
+        return productRepository.findAll().stream().anyMatch(p -> p.getId() == id);
     }
 
     public List<Product> findAll () {

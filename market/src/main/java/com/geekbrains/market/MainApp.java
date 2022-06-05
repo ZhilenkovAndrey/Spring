@@ -1,7 +1,10 @@
 package com.geekbrains.market;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.stereotype.Component;
 
+@Component
 public class MainApp {
     public static void main(String[] args) {
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
@@ -10,11 +13,12 @@ public class MainApp {
         OrderService orderService = context.getBean(OrderService.class);
 
         orderService.printListProducts();
-        orderService.beginOrdering();
+        Order order = new Order();
+        orderService.beginOrdering(context, order);
+        System.out.println(order.getId());
+        System.out.println(order.getUser().getUsername());
+        System.out.println(order.getProducts());
 
-
-//        Order order = orderService.createNewOrder();
-//        System.out.println(order);
 //
 //        System.out.println(cartService.getCurrentCart());
 

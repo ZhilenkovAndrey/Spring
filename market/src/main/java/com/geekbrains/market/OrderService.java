@@ -1,11 +1,14 @@
 package com.geekbrains.market;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
 import java.util.UUID;
 
 @Service
@@ -31,39 +34,92 @@ public class OrderService {
         System.out.println("Do you wont to make an order: y/n ");
     }
 
-    public void beginOrdering() {
+    public void beginOrdering(AnnotationConfigApplicationContext context, Order order) {
+        try {
+            a = reader.readLine();
+        } catch (IOException e) {
+            System.out.println(" Unknown command");
+            beginOrdering(context, order);
+        }
+
+        if (a.equalsIgnoreCase("y")) {
+            createNewOrder(order);
+        } else if (a.equalsIgnoreCase("n")) {
+            System.out.println(" Press q to quite");
+            try {
+                a = reader.readLine();
+                exit(a, context, order);
+            } catch (IOException e) {
+                System.out.println(" Unknown command");
+                beginOrdering(context, order);
+            }
+        } else {
+            System.out.println(" Unknown command");
+            beginOrdering(context, order);
+        }
+    }
+
+    public Order createNewOrder(Order order) {
+
+        order.setId(UUID.randomUUID().toString());
+
+        User currentUser = userService.getCurrentUser();
+        order.setUser(UserRegistration(currentUser));
+
+        Cart currentCart = productSetting(cartService);
+
+//        for (Product p : currentCart.getProducts()) {
+//            if (!productService.isProductIdExist(p.getId())) {
+//                throw new RuntimeException("What???");
+//            }
+//        }
+
+        order.setProducts(new ArrayList<>(currentCart.getProducts()));
+//        cartService.clearCurrentCart();
+
+        return order;
+    }
+
+    public User UserRegistration(User currentUser) {
+        System.out.println("Write your name:");
         try {
             a = reader.readLine();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        if (a.equalsIgnoreCase("y")) createNewOrder();
-        if (a.equalsIgnoreCase("n")) printListProducts();
-        if (!a.equalsIgnoreCase("y") || !a.equalsIgnoreCase("n")) {
-            System.out.println(" Unknown command");
-            printListProducts();
-        }
+        currentUser.setUsername(a);
+        return currentUser;
     }
 
-    public Order createNewOrder() {
-        Order order = new Order();
-
-        order.setId(UUID.randomUUID().toString());
-
-        User currentUser = userService.getCurrentUser();
-        order.setUser(currentUser);
-
-        Cart currentCart = cartService.getCurrentCart();
-
-        for (Product p : currentCart.getProducts()) {
-            if (!productService.isProductIdExist(p.getId())) {
-                throw new RuntimeException("What???");
+    public Cart productSetting(CartService cartService) {
+        while (true) {
+            System.out.println("Enter name or id of product:");
+            System.out.println("Press f to finish");
+            try {
+                a = reader.readLine();
+                cartService.addToCart(a);
+            } catch (NoSuchElementException | IOException e) {
+                if (a.equalsIgnoreCase("f")) {
+                    break;
+                }
+                try {
+                    int c = Integer.parseInt(a);
+                    cartService.addToCart(c);
+                } catch (NumberFormatException ex) {
+                    System.out.println(" Unknown command");
+                    productSetting(cartService);
+                }
             }
         }
+        return cartService.getCurrentCart();
+    }
 
-        order.setProducts(new ArrayList<>(currentCart.getProducts()));
-        cartService.clearCurrentCart();
-
-        return order;
+    public void exit(String a, AnnotationConfigApplicationContext context, Order order) {
+        if (a.equalsIgnoreCase("q")) {
+            context.close();
+        } else {
+            System.out.println(" Unknown command");
+            beginOrdering(context, order);
+        }
     }
 }

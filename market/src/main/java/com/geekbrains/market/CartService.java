@@ -24,8 +24,13 @@ public class CartService {
         return cart;
     }
 
-    public void addToCartByProductId(Long productId) {
-        Product product = productService.findById(productId).get();
+    public void addToCart(int productId) {
+        Product product = productService.find(productId).get();
+        cart.add(product);
+    }
+
+    public void addToCart(String productTitle) {
+        Product product = productService.find(productTitle).get();
         cart.add(product);
     }
 
@@ -34,6 +39,10 @@ public class CartService {
     }
 
     public void removeFromCart(String productTitle) {
-        cart.removeByTitle(productTitle);
+        cart.remove(productTitle);
+    }
+
+    public void removeFromCart(int productId) {
+        cart.remove(productId);
     }
 }
