@@ -3,12 +3,9 @@ package com.geekbrains.market;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.stereotype.Service;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 
@@ -92,8 +89,7 @@ public class OrderService {
     public Order createNewOrder(AnnotationConfigApplicationContext context) {
         Order order = new Order();
         Cart currentCart = new Cart();
-        //Не понял почему, но currentCart = cartService.getCurrentCart() не работает с методом productRemove()
-        //Что я делаю не так?
+
         order.setId(UUID.randomUUID().toString());
 
         User currentUser = userService.getCurrentUser();
@@ -108,17 +104,6 @@ public class OrderService {
         printOrder(order);
 
         finishOrder(context, order);
-
-
-//        for (Product p : currentCart.getProducts()) {
-//            if (!productService.isProductIdExist(p.getId())) {
-//                throw new RuntimeException("What???");
-//            }
-//        }
-
-//        order.setProducts(new ArrayList<>(currentCart.getProducts()));
-//        cartService.clearCurrentCart();
-
         return order;
     }
 
